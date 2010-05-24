@@ -126,9 +126,18 @@ class Customer(User, UserTypeMixin):
         else:
             return self.user.username
 
+    def gravatar(self, size=100):
+        gravatar_url = "http://www.gravatar.com/avatar"
+        emailHash = hashlib.md5(self.email.lower()).hexdigest()
+        return (("%s/%s.jpg?d=identicon&s=%s") % (gravatar_url, emailHash, size))
+
     @models.permalink
     def get_absolute_url(self):
         return ('accounts.views.customer_detail', (), {'customer_id': self.pk})
+
+    @models.permalink
+    def get_photo_url(self):
+        return ('accounts.views.customer_photo', (), {'customer_id': self.pk})
 
     def __unicode__(self):
         return self.full_name

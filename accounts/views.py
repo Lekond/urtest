@@ -146,6 +146,17 @@ def customer_registration(request, customer_type='j'):
 
 
 @login_required
+def customer_photo(request, customer_id):
+    """Фотография заказчика"""
+    customer = get_object_or_404(Customer, pk=customer_id)
+    user = request.user
+
+    viewing_self = user == customer
+
+    return render_to_request(request, 'accounts/customer_photo.html', {'customer': customer, 'viewing_self': viewing_self})
+
+
+@login_required
 def redirect_to_self(request):
     """Переадресация в свой личный кабинет"""
     # Получение текущего пользователя

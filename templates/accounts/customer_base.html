@@ -5,6 +5,7 @@
 {% block subbar %}
     <li><a href="{{ customer.get_absolute_url }}">Мои данные</a></li>
     <li><a href="{% url customer_detail_projects customer_id=customer.pk %}">Мои проекты</a></li>
+    <li><a href="{{ customer.get_photo_url }}">Фотография</a></li>
 {% endblock %}
 
 {% block content_title%}Личная страница компании {{ customer.full_name }}{% endblock %}

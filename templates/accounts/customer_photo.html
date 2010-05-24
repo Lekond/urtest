@@ -1,0 +1,19 @@
+{% extends 'accounts/customer_base.html' %}
+{% block sidebar %}
+          <ul>
+               <li><a href="{{ customer.get_absolute_url }}">Мои данные</a></li>
+               <li><a href="{% url customer_detail_projects customer_id=cusomer.id %}">Мои проекты</a></li>
+           </ul>
+{% endblock %}
+
+{% block content_title %}
+Фотография тестировщика {{ customer.full_name }}
+{% endblock %}
+
+{% block content %}
+    <img src="{{ customer.gravatar }}" alt="Здесь должен быть Ваш граватар">
+    Аватар предоставлен системой глобально-распознаваемых аватаров GRAVATAR
+    <BR><BR>Для того, чтобы сменить ваш глобально распознаваемый аватар, 
+    выполните шаги инструкции, расположенной по ссылке:
+    <BR><BR><a href="http://ru.gravatar.com/site/signup/" target="gravatar">http://ru.gravatar.com/site/signup/</a>
+{% endblock %}
