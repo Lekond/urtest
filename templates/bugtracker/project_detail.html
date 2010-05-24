@@ -33,14 +33,32 @@
             <td>{{ project.description }} </td>
         </tr>
         <tr>
-            <td>Прикрепленные файлы: </td>
+            <td><h3>Прикрепленные файлы: </h3></td>
             <td></td>
         </tr>
-         <tr>
-            <td><a href="{{ project.get_file_url }}">{{ project.f_name }}</a> </td>
-            <td> {{ project.f_comment }} </td>
-        </tr>
+        {% for f in files %}
+            <tr>
+                <td><h5> {{ f.name }} </h5></td>
+                <td> {{ f.comment }} </td>
+            </tr>
+            <tr>
+                {% if user_can_add_file %}
+                    <td><form action="{{ f.delete_file }}" method="POST">
+                        <input type="submit" value="Удалить файл"/>
+                    </form></td>
+                {% endif %}
+                <td><form action="{{ f.download_file }}" method="POST">
+                    <input type="submit" value="Скачать файл"/>
+                </form> </td>
+            </tr>
+        {% endfor %}
     </table>
+<BR>
+{% if user_can_add_file %}
+    <form action="{% url project_add_file project_id=project.pk  %}" method="POST">
+        <input type="submit" value="Добавить файл"/>
+    </form>
+{% endif %}
 <BR>
 {% if user_can_enlist %}
     <form action="{% url project_add_tester project_id=project.pk  %}" method="POST">

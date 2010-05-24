@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}RuTest project{% endblock %}
+{% block subbar %}{% endblock %}
+{% block content_title%}Добавление файла в проект{{ project.name }}{% endblock %}
+{% block content%}
+<script language='JavaScript' type='text/javascript'>
+</script>
+<form action="{% url project_add_file project_id=project.pk %}" method="post" enctype="multipart/form-data">
+     <fieldset>
+         <legend>Добавить файл</legend>
+         <table>
+             {{ form }}
+         </table>
+     </fieldset>
+     <fieldset>
+          <legend>Добавить</legend>
+         <input type="submit" value="Добавить" />
+     </fieldset>
+        
+</form>
+{% endblock %}
+

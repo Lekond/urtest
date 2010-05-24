@@ -25,8 +25,6 @@ class Project(models.Model):
                                 verbose_name="заказчик",
                                 editable=False)
     submit_date = models.DateField("дата размещения", auto_now_add=True)
-    f_name = models.CharField("название файла", max_length=50)
-    f_comment = models.TextField("описание файла", max_length=600)
 
     def add_tester(self, tester):
         self.testers.add(tester)
@@ -40,9 +38,6 @@ class Project(models.Model):
     def get_absolute_url(self):
         return ('bugtracker.views.project_detail', (), {'project_id': self.pk})
 
-    @models.permalink
-    def get_file_url(self):
-        return ('upload/%s_%s' % (self.pk, self.f_name))
 
     def __unicode__(self):
         return self.name
@@ -79,8 +74,6 @@ class Bug(models.Model):
                                 default='new')
     status_comment = models.TextField("примечание к статусу", blank=True, max_length=300)
     status_date = models.DateTimeField("дата/время изменения статуса", auto_now=True)
-    f_name = models.CharField("имя файла", max_length=50)
-    f_comment = models.TextField("описание файла", max_length=600)
 
     class Meta:
         verbose_name = u"баг"
@@ -94,11 +87,73 @@ class Bug(models.Model):
     def get_absolute_url(self):
         return ('bugtracker.views.bug_detail', (), {'bug_id': self.pk})
 
+    def __unicode__(self):
+        return self.name
+
+
+class ProjectFile(models.Model):
+    """Модель файла проекта"""
+    project = models.ForeignKey(Project,
+                                related_name='files',
+                                verbose_name="проект",
+                                editable=False)
+    name = models.CharField("название файла", max_length=50)
+    comment = models.TextField("описание файла", max_length=600)
+
+    class Meta:
+        verbose_name = u"файл проекта"
+        verbose_name_plural = u"файлы проекта"
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('bugtracker.views.project_detail', (), {'project_id': self.project.pk})
+
+    @models.permalink
+    def delete_file(self):
+        return ('bugtracker.views.project_delete_file', (), {'file_id': self.pk})
+
+    @models.permalink
+    def download_file(self):
+        return ('bugtracker.views.project_download_file', (), {'file_id': self.pk})
+
     @models.permalink
     def get_file_url(self):
-        return ('upload/%s_%s_%s' % (self.project.pk, self.pk, self.f_name))
+        return ('upload/%s_%s' % (self.pk, self.f_name))
 
     def __unicode__(self):
         return self.name
 
 
+class BugFile(models.Model):
+    """Модель файла бага"""
+    bug = models.ForeignKey(Bug,
+                            related_name='files',
+                            verbose_name="баг",
+                            editable=False)
+    name = models.CharField("название файла", max_length=50)
+    comment = models.TextField("описание файла", max_length=600)
+
+    class Meta:
+        verbose_name = u"файл бага"
+        verbose_name_plural = u"файлы бага"
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('bugtracker.views.bug_detail', (), {'bug_id': self.bug.pk})
+
+    @models.permalink
+    def delete_file(self):
+        bug = self.bug
+        #self.delete()
+        return ('bugtracker.views.bug_delete_file', (), {'file_id': file.pk})
+
+    @models.permalink
+    def download_file(self):
+        return ('bugtracker.views.bug_download_file', (), {'file_id': self.pk})
+
+    @models.permalink
+    def get_file_url(self):
+        return ('upload/%s_%s_%s' % (self.bug.project.pk, self.bug.pk, self.name))
+
+    def __unicode__(self):
+        return self.name
